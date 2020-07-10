@@ -24,6 +24,7 @@ After that include vivado_hls_export.cmake.
 That add custom_command and custom_target for build.
 That also setup installation. Copy ip folder to CMAKE_INSTALL_PREFIX/${project_name} except archived zip.
 
+```
 project_top
 ├── CMakeLists.txt:See CMakeLists.txt.hls_example
 ├── directives.tcl
@@ -32,6 +33,7 @@ project_top
 └── test:place test codes
     ├── include:place test headers
     └── src:place test sources
+```
 
 ```bash
 source <path_to_vivado>/setup.sh
@@ -53,6 +55,7 @@ After that include vivado_ipx_export.cmake.
 That add custom_command and custom_target for build.
 That also setup installation. Copy ip folder to CMAKE_INSTALL_PREFIX/${project_name} except archived zip.
 
+```
 project_top
 ├── CMakeLists.txt
 ├── scripts
@@ -62,6 +65,7 @@ project_top
 └── test
     └── src
         └── tb_interval_timer.v
+```
 
 ```bash
 source <path_to_vivado>/setup.sh
