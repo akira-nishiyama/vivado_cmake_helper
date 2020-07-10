@@ -11,7 +11,8 @@ See [ICS_IF](https://github.com/akira-nishiyama/ICS_IF).
 CMakeLists.txt example is stored in example folder.
 
 # Setup
-VIVADO_CMAKE_HELPER
+export VIVADO_CMAKE_HELPER environt variable that contain repository path.
+Just run below script.
 ```bash
 source <path-to-repository>/setup.sh
 ```
