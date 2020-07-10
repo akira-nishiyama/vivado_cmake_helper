@@ -7,7 +7,7 @@ Vivado_HLS 2019.2
 CMake 3.10.2
 
 # Example
-See [ICS_IF](#https://github.com/akira-nishiyama/ICS_IF).
+See [ICS_IF](https://github.com/akira-nishiyama/ICS_IF).
 CMakeLists.txt example is stored in example folder.
 
 # Setup
@@ -79,7 +79,7 @@ make install
 
 ## nested project
 nested project also works.
-See [ICS_IF](#https://github.com/akira-nishiyama/ICS_IF).
+See [ICS_IF](https://github.com/akira-nishiyama/ICS_IF).
 
 # License
 This software is released under the MIT License, see LICENSE.
