@@ -55,7 +55,7 @@ puts $export_path
 puts $file_list
 puts $file_list_tb
 
-create_project project_1 /home/akira/work/hls/ICS_IF/build/project_1 -part $target_part_name -force
+create_project project_1 ./project_1 -part $target_part_name -force
 add_files -norecurse $file_list
 add_files -fileset sim_1 -norecurse $file_list_tb
 update_compile_order -fileset sources_1
