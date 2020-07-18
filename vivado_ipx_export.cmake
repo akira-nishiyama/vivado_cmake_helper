@@ -22,6 +22,7 @@ add_custom_command(
 		"{${IP_REPO_PATH}}"
 		${OUT_DIR}
 		${BLOCK_DESIGN_TCL}
+		${HELPER_SCRIPT_PRJ_GEN}
 	)
 
 add_custom_target( ${PROJECT_NAME} ALL

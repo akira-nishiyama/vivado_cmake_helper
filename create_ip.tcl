@@ -21,24 +21,25 @@
 # 	         The design name should be $ip_name.
 # 	         (The Modification required from vivado "export block design" output.
 # 	          Or create block design with exactly same name as $ip_name in vivado.)
-#
+#	$argv  9:Path to project_generation.tcl
 # Usage:
-#	vivado -mode batch -source ../scripts/create_ip.tcl -tclargs "ICS_IF" "xczu3eg-sbva484-1-e" {../src/interval_timer.v:../src/empty.v} {../test/src/tb_interval_timer.v} Akira_Nishiyama 1.0 . ip_repo ../scripts/blockdesign.tcl
+#	vivado -mode batch -source ../scripts/create_ip.tcl -tclargs "ICS_IF" "xczu3eg-sbva484-1-e" {../src/interval_timer.v:../src/empty.v} {../test/src/tb_interval_timer.v} Akira_Nishiyama 1.0 . ip_repo ../scripts/blockdesign.tcl ../scripts/project_generation.tcl
 
-set ip_name           [lindex $argv  0]
-set target_part_name  [lindex $argv  1]
+set ip_name                  [lindex $argv  0]
+set target_part_name         [lindex $argv  1]
 #file list
-set file_list_in      [lindex $argv  2]
+set file_list_in             [lindex $argv  2]
 regsub -all ":" $file_list_in " " file_list
 #file list for simulation
-set file_list_tb_in   [lindex $argv  3]
+set file_list_tb_in          [lindex $argv  3]
 regsub -all ":" $file_list_tb_in " " file_list_tb
-set vendor_name       [lindex $argv  4]
-set version           [lindex $argv  5]
-set ip_repo_path_in      [lindex $argv  6]
+set vendor_name              [lindex $argv  4]
+set version                  [lindex $argv  5]
+set ip_repo_path_in          [lindex $argv  6]
 regsub -all ":" $ip_repo_path_in " " ip_repo_path
-set export_path_i     [lindex $argv  7]
-set blockdesign_path  [lindex $argv  8]
+set export_path_i            [lindex $argv  7]
+set blockdesign_path         [lindex $argv  8]
+set project_generation_path  [lindex $argv  9]
 
 puts [lindex $argv  0]
 puts [lindex $argv  1]
@@ -49,21 +50,17 @@ puts [lindex $argv  5]
 puts [lindex $argv  6]
 puts [lindex $argv  7]
 puts [lindex $argv  8]
+puts [lindex $argv  9]
 
 set export_path "$export_path_i/$vendor_name\_user\_$ip_name\_1.0.zip"
 puts $export_path
 puts $file_list
 puts $file_list_tb
 
-create_project project_1 ./project_1 -part $target_part_name -force
-add_files -norecurse $file_list
-add_files -fileset sim_1 -norecurse $file_list_tb
-update_compile_order -fileset sources_1
-set_property  ip_repo_paths  $ip_repo_path [current_project]
-update_ip_catalog
-set argv [list $ip_name ]
-set argc 1
-source $blockdesign_path
+set argv [list $ip_name $target_part_name $file_list $file_list_tb $vendor_name $version $ip_repo_path $blockdesign_path]
+set argc 8
+source $project_generation_path
+
 ipx::package_project -root_dir /home/akira/work/hls/ICS_IF/build/ip_repo -vendor $vendor_name -library user -taxonomy /UserIP -module $ip_name -import_files
 set_property core_revision 2 [ipx::find_open_core $vendor_name:user:$ip_name:$version]
 ipx::create_xgui_files [ipx::find_open_core $vendor_name:user:$ip_name:$version]
