@@ -39,27 +39,42 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
 		COMMAND ${MV} ${DESTINATION_DIR}/vlog.prj ${DESTINATION_DIR}/${SIM_TARGET}_vlog.prj
 		COMMAND ${CP} ${CP_OPTION} ${DESTINATION_DIR}/* ${WORK_DIR}
 	        )
-	add_custom_target( compile_${SIM_TARGET}
+	add_custom_command(
+		OUTPUT ${WORK_DIR}/compile_${SIM_TARGET}.timestamp
 		COMMAND source ./compile_${SIM_TARGET}.sh -noclean_files
+		COMMAND ${CMAKE_COMMAND} -E touch compile_${SIM_TARGET}.timestamp
 		WORKING_DIRECTORY ${WORK_DIR}
 		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${DEPENDENCIES} ${COMP_PREV_TARGET}
 	)
+	add_custom_target( compile_${SIM_TARGET}
+		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.timestamp
+	)
 	add_dependencies(compile_all compile_${SIM_TARGET})
-	add_custom_target( elaborate_${SIM_TARGET}
+	add_custom_command(
+		OUTPUT ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp
 		COMMAND source ./elaborate_${SIM_TARGET}.sh -noclean_files
+		COMMAND ${CMAKE_COMMAND} -E touch elaborate_${SIM_TARGET}.timestamp
 		WORKING_DIRECTORY ${WORK_DIR}
-		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh compile_${SIM_TARGET} ${DEPENDENCIES}
+		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/compile_${SIM_TARGET}.timestamp ${DEPENDENCIES}
+	)
+	add_custom_target( elaborate_${SIM_TARGET}
+		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp
 	)
 	add_dependencies(elaborate_all elaborate_${SIM_TARGET})
 	add_custom_command(
 		OUTPUT ${WORK_DIR}/${SIM_TARGET}.wdb
 		COMMAND source ./simulate_${SIM_TARGET}.sh -noclean_files
 		WORKING_DIRECTORY ${WORK_DIR}
-		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh elaborate_${SIM_TARGET} ${DEPENDENCIES}
+		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp ${DEPENDENCIES}
 	)
 	add_custom_target( simulate_${SIM_TARGET}
 		DEPENDS ${PROJECT_NAME} ${WORK_DIR}/${SIM_TARGET}.wdb
 	)
 	add_dependencies(sim_all simulate_${SIM_TARGET})
+	add_custom_target(
+		open_${SIM_TARGET}
+		COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_OPEN_WDB} -tclargs ${WORK_DIR}/${SIM_TARGET}.wdb
+		DEPENDS ${WORK_DIR}/${SIM_TARGET}.wdb
+	)
 
 endfunction()
