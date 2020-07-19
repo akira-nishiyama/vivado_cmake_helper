@@ -19,7 +19,7 @@ set sim_dir          [lindex $argv  1]
 
 set vivado_project_name "project_1"
 set simulation_set_name "sim_1"
-set destination_dir "$sim_dir/work"
+set destination_dir "$sim_dir/work/$testbench_name"
 
 file mkdir $destination_dir
 
