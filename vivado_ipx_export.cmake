@@ -11,26 +11,26 @@ string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
 set(IP_FILENAME "${IP_FILENAME}.zip")
 
 add_custom_command(
-	OUTPUT ${OUT_DIR}/${IP_FILENAME}
-	COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_IPX} -tclargs
-		${PROJECT_NAME}
-		${TARGET_DEVICE}
-		"{${SRC_FILES}}"
-		"{${TESTBENCH_FILES}}"
-		${VENDOR}
-		${PROJECT_VERSION}
-		"{${IP_REPO_PATH}}"
-		${OUT_DIR}
-		${BLOCK_DESIGN_TCL}
-		${HELPER_SCRIPT_PRJ_GEN}
-	)
+    OUTPUT ${OUT_DIR}/${IP_FILENAME}
+    COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_IPX} -tclargs
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        "{${SRC_FILES}}"
+        "{${TESTBENCH_FILES}}"
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        "{${IP_REPO_PATH}}"
+        ${OUT_DIR}
+        ${BLOCK_DESIGN_TCL}
+        ${HELPER_SCRIPT_PRJ_GEN}
+    )
 
 add_custom_target( ${PROJECT_NAME} ALL
-	DEPENDS ${OUT_DIR}/${IP_FILENAME}
-	)
+    DEPENDS ${OUT_DIR}/${IP_FILENAME}
+    )
 
 install(DIRECTORY ${OUT_DIR}
-	DESTINATION ${PROJECT_NAME}
-	PATTERN "*.zip" EXCLUDE
-        PATTERN "*")
+    DESTINATION ${PROJECT_NAME}
+    PATTERN "*.zip" EXCLUDE
+    PATTERN "*")
 

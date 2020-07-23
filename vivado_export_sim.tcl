@@ -28,6 +28,9 @@ open_project $vivado_project_name/$vivado_project_name.xpr
 set_property top $testbench_name [get_filesets $simulation_set_name]
 set_property top_lib xil_defaultlib [get_filesets $simulation_set_name]
 
+set_property -name {xsim.compile.xvlog.more_options} -value {-L uvm} -objects [get_filesets $simulation_set_name]
+set_property -name {xsim.elaborate.xelab.more_options} -value {-L uvm} -objects [get_filesets $simulation_set_name]
+
 generate_target Simulation [get_files -filter {FILE_TYPE=="Block Designs"}]
 generate_target Simulation [get_ips -filter {SCOPE==""}]
 
@@ -37,7 +40,9 @@ set_property -name {xsim.simulate.runtime} -value {-all} -objects [get_filesets 
 set_property -name {xsim.simulate.log_all_signals} -value {true} -objects [get_filesets $simulation_set_name]
 set_property -name {xsim.simulate.wdb} -value $destination_dir/$testbench_name.wdb -objects [get_filesets sim_1]
 #launch_simulation -scripts_only -absolute_path
-export_simulation -directory $destination_dir -ip_user_files_dir $sim_dir/ip_user_files -ipstatic_source_dir $sim_dir/ip_user_files/ipstatic -simulator xsim -use_ip_compiled_libs -absolute_path
+export_simulation -directory $destination_dir -ip_user_files_dir $sim_dir/ip_user_files -ipstatic_source_dir $sim_dir/ip_user_files/ipstatic -simulator xsim -use_ip_compiled_libs -absolute_path -force
 
+exec touch $destination_dir/xsim/vhdl.prj
+exec touch $destination_dir/xsim/vlog.prj
 
 
