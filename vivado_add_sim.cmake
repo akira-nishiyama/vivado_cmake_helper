@@ -34,6 +34,9 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
         COMMAND ${SED} -e '0,/compile/   s/compile/\#compile/'       ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp | 
                 ${SED} -e '0,/elaborate/ s/elaborate/\#elaborate/' >
                 ${DESTINATION_DIR}/simulate_${SIM_TARGET}.sh
+        COMMAND chmod +x ${DESTINATION_DIR}/compile_${SIM_TARGET}.sh
+        COMMAND chmod +x ${DESTINATION_DIR}/elaborate_${SIM_TARGET}.sh
+        COMMAND chmod +x ${DESTINATION_DIR}/simulate_${SIM_TARGET}.sh
         COMMAND ${MV} ${DESTINATION_DIR}/vhdl.prj ${DESTINATION_DIR}/${SIM_TARGET}_vhdl.prj
         COMMAND ${MV} ${DESTINATION_DIR}/vlog.prj ${DESTINATION_DIR}/${SIM_TARGET}_vlog.prj
         COMMAND ${CP} ${CP_OPTION} ${DESTINATION_DIR}/* ${WORK_DIR}
@@ -71,11 +74,19 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
     )
     add_dependencies(sim_all simulate_${SIM_TARGET})
     add_custom_target(
-        open_${SIM_TARGET}
+        open_wdb_${SIM_TARGET}
         COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_OPEN_WDB} -tclargs ${WORK_DIR}/${SIM_TARGET}.wdb
         DEPENDS ${WORK_DIR}/${SIM_TARGET}.wdb
     )
-
+    add_test(
+        NAME simulate_${SIM_TARGET}.sh
+        COMMAND "simulate_${SIM_TARGET}.sh" "-noclean_files"
+        WORKING_DIRECTORY ${WORK_DIR}
+    )
+    set_tests_properties(
+        simulate_${SIM_TARGET}.sh PROPERTIES 
+        DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp ${DEPENDENCIES}
+    )
 endfunction()
 
 function( add_bd BLOCK_DESIGN_TCL)
