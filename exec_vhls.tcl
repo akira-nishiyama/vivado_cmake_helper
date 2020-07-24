@@ -1,30 +1,30 @@
 # exec_vhls.tcl
-# 	This file is helper scripts that creating and managing ip under the vivado_hls.
-# 	Due to vivado_hls and cmake restriction, scripts arguments could not use space and could not start with "-".
+#     This file is helper scripts that creating and managing ip under the vivado_hls.
+#     Due to vivado_hls and cmake restriction, scripts arguments could not use space and could not start with "-".
 # Copyright (c) 2020 Akira Nishiyama.
 # Released under the MIT license
 # https://opensource.org/licenses/mit-license.php
 #
 # Arguments:
-# 	$argv  0:target function name for HLS
-# 	$argv  1:target part name.
-# 	$argv  2:clock preiod in nano seconds
-# 	$argv  3:file list to add project. enclose with brace and separetes with colon.
-# 	$argv  4:cflags to pass add_files command. enclose with brace, start with cflags= and separates with colon.
-# 	$argv  5:testbench file list to add project
-# 	$argv  6:cflags to pass add_files -tb command. enclose with brace, start with cflags_tb= and separates with colon.
-# 	$argv  7:description of export IP. enclose with brace and use colon instead of space.
-# 	$argv  8:display name of export IP
-# 	$argv  9:vendor name
-# 	$argv 10:version of export IP
-# 	$argv 11:directives.tcl path
-#	$argv 12:flow control flag
-#		export - run csynth_design and export_design
-#		csim   - run csim_design
-#		cosim  - run csynth_design and cosim_design
+#     $argv  0:target function name for HLS
+#     $argv  1:target part name.
+#     $argv  2:clock preiod in nano seconds
+#     $argv  3:file list to add project. enclose with brace and separetes with colon.
+#     $argv  4:cflags to pass add_files command. enclose with brace, start with cflags= and separates with colon.
+#     $argv  5:testbench file list to add project
+#     $argv  6:cflags to pass add_files -tb command. enclose with brace, start with cflags_tb= and separates with colon.
+#     $argv  7:description of export IP. enclose with brace and use colon instead of space.
+#     $argv  8:display name of export IP
+#     $argv  9:vendor name
+#     $argv 10:version of export IP
+#     $argv 11:directives.tcl path
+#    $argv 12:flow control flag
+#        export - run csynth_design and export_design
+#        csim   - run csim_design
+#        cosim  - run csynth_design and cosim_design
 #
 # Usage:
-#	vivado_hls exec_vhls.tcl ics_if_rx xczu3eg-sbva484-1-e 10 {src/ics_if_rx.cpp:src/empty.cpp} {cflags="-Iinclude"} {test/src/tb_ics_if_rx.cpp} {cflags_tb="-Iinclude"} {description:of:ip} ICS_IF_RX Akira_Nishiyama 0.1 directives.tcl export
+#    vivado_hls exec_vhls.tcl ics_if_rx xczu3eg-sbva484-1-e 10 {src/ics_if_rx.cpp:src/empty.cpp} {cflags="-Iinclude"} {test/src/tb_ics_if_rx.cpp} {cflags_tb="-Iinclude"} {description:of:ip} ICS_IF_RX Akira_Nishiyama 0.1 directives.tcl export
  
 # puts $argv0
 set top_function_name   [lindex $argv  0]
@@ -78,13 +78,13 @@ set_part $target_part_name
 create_clock -period $clock_period -name default
 add_files $file_list -cflags $cflags
 add_files -tb $file_list_tb -cflags $cflags_tb
-config_export	-description $description \
-		-display_name $display_ip_name \
-		-format ip_catalog \
-		-ipname $top_function_name \
-		-rtl verilog \
-		-vendor $vendor_name \
-		-version $version
+config_export    -description $description \
+        -display_name $display_ip_name \
+        -format ip_catalog \
+        -ipname $top_function_name \
+        -rtl verilog \
+        -vendor $vendor_name \
+        -version $version
 
 source $directives_tcl_path
 
