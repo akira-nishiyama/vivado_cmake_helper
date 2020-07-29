@@ -1,11 +1,16 @@
-function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
+function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES ADDITIONAL_VLOG_OPTS ADDITIONAL_ELAB_OPTS ADDITIONAL_XSIM_OPTS PREV_TARGET)
     set(WORK_DIR "${SIMULATION_DIR}/work/xsim")
     set(DESTINATION_DIR "${SIMULATION_DIR}/work/${SIM_TARGET}/xsim")
     if(PREV_TARGET)
+        set(GEN_PREV_TARGET gen_${PREV_TARGET})
         set(COMP_PREV_TARGET compile_${PREV_TARGET})
     else()
+        set(GEN_PRE_TARGET "")
         set(COMP_PREV_TARGET "")
     endif()
+    string(REPLACE "/" "\\/" ADDITIONAL_VLOG_OPTS "${ADDITIONAL_VLOG_OPTS}")
+    string(REPLACE "/" "\\/" ADDITIONAL_ELAB_OPTS "${ADDITIONAL_ELAB_OPTS}")
+    string(REPLACE "/" "\\/" ADDITIONAL_XSIM_OPTS "${ADDITIONAL_XSIM_OPTS}")
     file(MAKE_DIRECTORY ${DESTINATION_DIR})
     file(WRITE ${DESTINATION_DIR}/vhdl.prj)
     file(WRITE ${DESTINATION_DIR}/vlog.prj)
@@ -21,8 +26,9 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
                 ${SED} -e 's/compile.log/${SIM_TARGET}_compile.log/'                                            |
                 ${SED} -e 's/elaborate.log/${SIM_TARGET}_elaborate.log/'                                        |
                 ${SED} -e 's/simulate.log/${SIM_TARGET}_simulate.log/'                                          |
-                ${SED} -e 's/xvlog_opts=\"--relax/xvlog_opts=\"--relax -L uvm/'                                 |
-                ${SED} -e 's/xelab --relax/xelab --relax -L uvm/'                                               >
+                ${SED} -e 's/xvlog_opts=\"--relax/xvlog_opts=\"--relax ${ADDITIONAL_VLOG_OPTS}/'                |
+                ${SED} -e 's/xelab --relax/xelab --relax ${ADDITIONAL_ELAB_OPTS}/'                              |
+                ${SED} -e 's/xsim ${SIM_TARGET}/xsim ${SIM_TARGET} ${ADDITIONAL_XSIM_OPTS}/'                    >
                 ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp
         COMMAND ${SED} -i -e '10alog_wave -r /' ${DESTINATION_DIR}/cmd.tcl
         COMMAND ${SED} -e '0,/elaborate/ s/elaborate/\#elaborate/'   ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp | 
@@ -40,7 +46,12 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
         COMMAND ${MV} ${DESTINATION_DIR}/vhdl.prj ${DESTINATION_DIR}/${SIM_TARGET}_vhdl.prj
         COMMAND ${MV} ${DESTINATION_DIR}/vlog.prj ${DESTINATION_DIR}/${SIM_TARGET}_vlog.prj
         COMMAND ${CP} ${CP_OPTION} ${DESTINATION_DIR}/* ${WORK_DIR}
+        DEPENDS ${PROJECT_NAME} ${DEPENDENCIES} ${GEN_PREV_TARGET}
             )
+    add_custom_target( gen_${SIM_TARGET}
+        DEPENDS ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.sh ${WORK_DIR}/simulate_${SIM_TARGET}.sh
+    )
+    add_dependencies( gen_all gen_${SIM_TARGET})
     add_custom_command(
         OUTPUT ${WORK_DIR}/compile_${SIM_TARGET}.timestamp
         COMMAND source ./compile_${SIM_TARGET}.sh -noclean_files
@@ -85,7 +96,7 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES PREV_TARGET)
     )
     set_tests_properties(
         simulate_${SIM_TARGET}.sh PROPERTIES 
-        DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp ${DEPENDENCIES}
+        DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp
     )
 endfunction()
 
