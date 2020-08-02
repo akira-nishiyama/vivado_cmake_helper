@@ -41,6 +41,9 @@ set export_path_i            [lindex $argv  7]
 set blockdesign_path         [lindex $argv  8]
 set project_generation_path  [lindex $argv  9]
 
+set vivado_project_name "project_1"
+puts $vivado_project_name/$vivado_project_name.xpr
+
 puts [lindex $argv  0]
 puts [lindex $argv  1]
 puts [lindex $argv  2]
@@ -57,9 +60,11 @@ puts $export_path
 puts $file_list
 puts $file_list_tb
 
-set argv [list $ip_name $target_part_name $file_list $file_list_tb $vendor_name $version $ip_repo_path $blockdesign_path]
-set argc 8
-source $project_generation_path
+open_project $vivado_project_name/$vivado_project_name.xpr
+
+#set argv [list $ip_name $target_part_name $file_list $file_list_tb $vendor_name $version $ip_repo_path $blockdesign_path]
+#set argc 8
+#source $project_generation_path
 
 ipx::package_project -root_dir /home/akira/work/hls/ICS_IF/build/ip_repo -vendor $vendor_name -library user -taxonomy /UserIP -module $ip_name -import_files
 set_property core_revision 2 [ipx::find_open_core $vendor_name:user:$ip_name:$version]

@@ -17,10 +17,6 @@
 #     $argv  5:version. This argument is ignored because version is fixed to 1.0.
 #              Reason:ip packager could not change the version fields through tcl code.
 #     $argv  6:ip repository path for create block design. Enclose with brace and separates with colon.
-#     $argv  7:Tcl code path to create the target block design.
-#              The design name should be $ip_name.
-#              (The Modification required from vivado "export block design" output.
-#               Or create block design with exactly same name as $ip_name in vivado.)
 #
 # Usage:
 #    vivado -mode batch -source ../scripts/create_ip.tcl -tclargs "ICS_IF" "xczu3eg-sbva484-1-e" {../src/interval_timer.v:../src/empty.v} {../test/src/tb_interval_timer.v} Akira_Nishiyama 1.0 . ../scripts/blockdesign.tcl
@@ -50,8 +46,8 @@ puts [lindex $argv  5]
 puts [lindex $argv  6]
 puts [lindex $argv  7]
 
-set export_path "$export_path_i/$vendor_name\_user\_$ip_name\_1.0.zip"
-puts $export_path
+#set export_path "$export_path_i/$vendor_name\_user\_$ip_name\_1.0.zip"
+#puts $export_path
 puts $file_list
 puts $file_list_tb
 
@@ -61,7 +57,4 @@ add_files -fileset $simulation_set_name -norecurse $file_list_tb
 update_compile_order -fileset sources_1
 set_property  ip_repo_paths  $ip_repo_path [current_project]
 update_ip_catalog
-set argv [list $ip_name ]
-set argc 1
-source $blockdesign_path
 
