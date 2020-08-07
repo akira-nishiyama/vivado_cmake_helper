@@ -25,7 +25,7 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
             ${OUT_DIR}
         COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1_gen.timestamp
         )
-    add_custom_target( prj_gen_${PROJECT_NAME}
+    add_custom_target( prj_gen_${PROJECT_NAME} ALL
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1_gen.timestamp
         )
 
