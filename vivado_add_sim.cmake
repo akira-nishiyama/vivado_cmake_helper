@@ -12,6 +12,7 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES ADDITIONAL_VLOG_OPTS AD
     string(REPLACE "/" "\\/" ADDITIONAL_ELAB_OPTS "${ADDITIONAL_ELAB_OPTS}")
     string(REPLACE "/" "\\/" ADDITIONAL_XSIM_OPTS "${ADDITIONAL_XSIM_OPTS}")
     file(MAKE_DIRECTORY ${DESTINATION_DIR})
+    file(MAKE_DIRECTORY ${WORK_DIR})
     file(WRITE ${DESTINATION_DIR}/vhdl.prj)
     file(WRITE ${DESTINATION_DIR}/vlog.prj)
     add_custom_command(
@@ -97,6 +98,7 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES ADDITIONAL_VLOG_OPTS AD
     set_tests_properties(
         simulate_${SIM_TARGET}.sh PROPERTIES 
         DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp
+        FAIL_REGULAR_EXPRESSION "UVM_FATAL : *[1-9];UVM_ERROR : *[1-9]"
     )
 endfunction()
 
