@@ -13,7 +13,7 @@ set(IP_FILENAME "${IP_FILENAME}.zip")
 
 add_custom_command(
     OUTPUT ${OUT_DIR}/${IP_FILENAME}
-    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_HLS}
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
         ${CLOCK_PERIOD}
@@ -35,7 +35,7 @@ add_custom_target( ${PROJECT_NAME} ALL
 
 add_test(
     NAME ${PROJECT_NAME}
-    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_HLS}
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
         ${CLOCK_PERIOD}
@@ -53,6 +53,6 @@ add_test(
 
 
 install(DIRECTORY ${OUT_DIR}
-    DESTINATION ${PROJECT_NAME}
-    PATTERN "*.zip" EXCLUDE
+        DESTINATION ${PROJECT_NAME}
+        PATTERN "*.zip" EXCLUDE
         PATTERN "*")
