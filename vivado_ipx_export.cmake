@@ -1,7 +1,12 @@
-function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH HELPER_SCRIPT_PRJ_GEN)
+function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH )
 
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/ip_repo")
     
+    find_file(  HELPER_SCRIPT_PRJ_GEN
+                NAME vivado_project_generation.tcl
+                HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+                REQUIRED)
+
     #output filename
     set(IP_FILENAME "")
     list(APPEND IP_FILENAME ${VENDOR})
@@ -9,7 +14,6 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
     list(APPEND IP_FILENAME ${PROJECT_NAME})
     list(APPEND IP_FILENAME ${PROJECT_VERSION})
     string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
-    #string( REPLACE "." "_" IP_FILENAME "${IP_FILENAME}" )
     set(IP_FILENAME "${IP_FILENAME}.zip")
     
     add_custom_command(
@@ -33,6 +37,11 @@ endfunction()
 
 function(project_add_bd BLOCK_NAME BLOCK_DESIGN_TCL DEPENDENCIES)
 
+    find_file(  HELPER_SCRIPT_ADD_BD
+                NAME vivado_add_bd.tcl
+                HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+                REQUIRED)
+
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/project_1/add_bd_${BLOCK_NAME}.timestamp
         COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_ADD_BD} -tclargs ${BLOCK_DESIGN_TCL}
@@ -45,9 +54,15 @@ function(project_add_bd BLOCK_NAME BLOCK_DESIGN_TCL DEPENDENCIES)
 
 endfunction()
 
-function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH HELPER_SCRIPT_IPX)
+function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH )
 
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/ip_repo")
+
+
+    find_file(  HELPER_SCRIPT_EXPORT_IP
+                NAME vivado_export_ip.tcl
+                HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+                REQUIRED)
 
     #output filename
     set(IP_FILENAME "")
@@ -56,12 +71,11 @@ function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES I
     list(APPEND IP_FILENAME ${PROJECT_NAME})
     list(APPEND IP_FILENAME ${PROJECT_VERSION})
     string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
-    #string( REPLACE "." "_" IP_FILENAME "${IP_FILENAME}" )
     set(IP_FILENAME "${IP_FILENAME}.zip")
 
     add_custom_command(
         OUTPUT ${OUT_DIR}/${IP_FILENAME}
-        COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_IPX} -tclargs
+        COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_EXPORT_IP} -tclargs
             ${PROJECT_NAME}
             ${TARGET_DEVICE}
             "{${SRC_FILES}}"
@@ -71,7 +85,6 @@ function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES I
             "{${IP_REPO_PATH}}"
             ${OUT_DIR}
             ${BLOCK_DESIGN_TCL}
-            ${HELPER_SCRIPT_PRJ_GEN}
         )
 
     add_custom_target( ${PROJECT_NAME} ALL

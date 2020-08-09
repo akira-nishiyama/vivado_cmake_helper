@@ -1,4 +1,4 @@
-# project_generation.tcl
+# vivado_project_generation.tcl
 #     This file implements the Tcl code for project generation for vivado with cmake.
 #     Source lists are separated with colon. The reason is that the vivado_hls scripts
 #     use colon delimiter due to its restriction, so I chose the same method for this scripts.
