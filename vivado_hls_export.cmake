@@ -12,28 +12,47 @@ string( REPLACE "." "_" IP_FILENAME "${IP_FILENAME}" )
 set(IP_FILENAME "${IP_FILENAME}.zip")
 
 add_custom_command(
-	OUTPUT ${OUT_DIR}/${IP_FILENAME}
-	COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_HLS}
-		${PROJECT_NAME}
-		${TARGET_DEVICE}
-		${CLOCK_PERIOD}
-		"{${SRC_FILES}}"
-		"{cflags=${CFLAGS}}"
-		"{${TESTBENCH_FILES}}"
-		"{cflags_tb=${CFLAGS_TB}}"
-		"{${DESCRIPTION}}"
-		${DISPLAY_IP_NAME}
-		${VENDOR}
-		${PROJECT_VERSION}
-		${DIRECTIVES}
-		"export"
-	)
+    OUTPUT ${OUT_DIR}/${IP_FILENAME}
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_HLS}
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        ${CLOCK_PERIOD}
+        "{${SRC_FILES}}"
+        "{cflags=${CFLAGS}}"
+        "{${TESTBENCH_FILES}}"
+        "{cflags_tb=${CFLAGS_TB}}"
+        "{${DESCRIPTION}}"
+        ${DISPLAY_IP_NAME}
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        ${DIRECTIVES}
+        "export"
+    )
 
 add_custom_target( ${PROJECT_NAME} ALL
-	DEPENDS ${OUT_DIR}/${IP_FILENAME}
-	)
+    DEPENDS ${OUT_DIR}/${IP_FILENAME}
+    )
+
+add_test(
+    NAME ${PROJECT_NAME}
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_HLS}
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        ${CLOCK_PERIOD}
+        "{${SRC_FILES}}"
+        "{cflags=${CFLAGS}}"
+        "{${TESTBENCH_FILES}}"
+        "{cflags_tb=${CFLAGS_TB}}"
+        "{${DESCRIPTION}}"
+        ${DISPLAY_IP_NAME}
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        ${DIRECTIVES}
+        "csim"
+    )
+
 
 install(DIRECTORY ${OUT_DIR}
-	DESTINATION ${PROJECT_NAME}
-	PATTERN "*.zip" EXCLUDE
+    DESTINATION ${PROJECT_NAME}
+    PATTERN "*.zip" EXCLUDE
         PATTERN "*")

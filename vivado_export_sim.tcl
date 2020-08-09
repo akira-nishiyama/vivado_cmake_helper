@@ -1,18 +1,18 @@
 # vivado_export_sim.tcl
-# 	This file implements the Tcl code for export simulation scripts for vivado with cmake.
-# 	This scripts assumes that Vivado project is already created.
-# 	Project name is fixed to "project_1". Simulation set name is fixed to "sim_1".
-# 	
+#     This file implements the Tcl code for export simulation scripts for vivado with cmake.
+#     This scripts assumes that Vivado project is already created.
+#     Project name is fixed to "project_1". Simulation set name is fixed to "sim_1".
+#     
 # Copyright (c) 2020 Akira Nishiyama.
 # Released under the MIT license
 # https://opensource.org/licenses/mit-license.php
 #
 # Arguments:
-#       $argv  0:testbench name
-# 	$argv  1:simulation export destination.
+#     $argv  0:testbench name
+#     $argv  1:simulation export destination.
 #
 # Usage:
-#	vivado -mode batch -source ../scripts/vivado_export_sim.tcl -tclargs tb_ics_if ./sim
+#    vivado -mode batch -source ../scripts/vivado_export_sim.tcl -tclargs tb_ics_if ./sim
 #
 set testbench_name   [lindex $argv  0]
 set sim_dir          [lindex $argv  1]

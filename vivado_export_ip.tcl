@@ -1,29 +1,29 @@
-# create_ip.tcl
-# 	This file implements the Tcl code for ip generation for vivado with cmake.
-# 	Source lists are separated with colon. The reason is that the vivado_hls scripts
-# 	use colon delimiter due to its restriction, so I chose the same method for this scripts.
-# 	
+# vivado_export_ip.tcl
+#     This file implements the Tcl code for ip generation for vivado with cmake.
+#     Source lists are separated with colon. The reason is that the vivado_hls scripts
+#     use colon delimiter due to its restriction, so I chose the same method for this scripts.
+#     
 # Copyright (c) 2020 Akira Nishiyama.
 # Released under the MIT license
 # https://opensource.org/licenses/mit-license.php
 #
 # Arguments:
-# 	$argv  0:target ip name.
-# 	$argv  1:target part name.
-# 	$argv  2:file list to add project. Enclose with brace and separetes with colon.
-# 	$argv  3:testbench file list to add project. Enclose with brace and separetes with colon.
-# 	$argv  4:vendor_name.
-# 	$argv  5:version. This argument is ignored because version is fixed to 1.0.
-# 	         Reason:ip packager could not change the version fields through tcl code.
-# 	$argv  6:ip repository path for create block design. Enclose with brace and separates with colon.
-# 	$argv  7:ip export path.
-# 	$argv  8:Tcl code path to create the target block design.
-# 	         The design name should be $ip_name.
-# 	         (The Modification required from vivado "export block design" output.
-# 	          Or create block design with exactly same name as $ip_name in vivado.)
-#	$argv  9:Path to project_generation.tcl
+#     $argv  0:target ip name.
+#     $argv  1:target part name.
+#     $argv  2:file list to add project. Enclose with brace and separetes with colon.
+#     $argv  3:testbench file list to add project. Enclose with brace and separetes with colon.
+#     $argv  4:vendor_name.
+#     $argv  5:version. This argument is ignored because version is fixed to 1.0.
+#              Reason:ip packager could not change the version fields through tcl code.
+#     $argv  6:ip repository path for create block design. Enclose with brace and separates with colon.
+#     $argv  7:ip export path.
+#     $argv  8:Tcl code path to create the target block design.
+#              The design name should be $ip_name.
+#              (The Modification required from vivado "export block design" output.
+#               Or create block design with exactly same name as $ip_name in vivado.)
+#    $argv  9:Path to project_generation.tcl
 # Usage:
-#	vivado -mode batch -source ../scripts/create_ip.tcl -tclargs "ICS_IF" "xczu3eg-sbva484-1-e" {../src/interval_timer.v:../src/empty.v} {../test/src/tb_interval_timer.v} Akira_Nishiyama 1.0 . ip_repo ../scripts/blockdesign.tcl ../scripts/project_generation.tcl
+#    vivado -mode batch -source ../scripts/create_ip.tcl -tclargs "ICS_IF" "xczu3eg-sbva484-1-e" {../src/interval_timer.v:../src/empty.v} {../test/src/tb_interval_timer.v} Akira_Nishiyama 1.0 . ip_repo ../scripts/blockdesign.tcl ../scripts/project_generation.tcl
 
 set ip_name                  [lindex $argv  0]
 set target_part_name         [lindex $argv  1]
