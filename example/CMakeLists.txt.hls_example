@@ -1,22 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
-find_program(HLS_COMMAND
-		NAME vivado_hls
-		HINTS ENV var
-		REQUIRED)
+enable_testing()
 
-find_file(HELPER_SCRIPT_HLS
-		NAME exec_vhls.tcl
-		HINTS $ENV{VIVADO_CMAKE_HELPER}
-		REQUIRED)
-
-find_file(VIVADO_HLS_EXPORT_CMAKE
-		NAME vivado_hls_export.cmake
-		HINTS $ENV{VIVADO_CMAKE_HELPER}
-		REQUIRED)
+find_package(   vivado_hls_cmake_helper
+                HINTS $ENV{VIVADO_CMAKE_HELPER}
+                REQUIRED)
 
 project(ics_if_main
-	VERSION 0.1
-	LANGUAGES NONE)
+    VERSION 0.1
+    LANGUAGES NONE)
 set(VENDOR "Akira_Nishiyama")
 #set(VERSION "0.1")
 set(LIBRARY_NAME "hls")
@@ -50,10 +41,10 @@ set(DIRECTIVES ${CMAKE_CURRENT_SOURCE_DIR}/directives.tcl)
 include(${VIVADO_HLS_EXPORT_CMAKE})
 
 if(PRINT_VARIABLES)
-	message(STATUS "*** dump start cmake variables ***")
-	get_cmake_property(_variableNames VARIABLES)
-	foreach(_variableName ${_variableNames})
-	        message(STATUS "${_variableName}=${${_variableName}}")
-	endforeach()
-	message(STATUS "*** dump end ***")
+    message(STATUS "*** dump start cmake variables ***")
+    get_cmake_property(_variableNames VARIABLES)
+    foreach(_variableName ${_variableNames})
+            message(STATUS "${_variableName}=${${_variableName}}")
+    endforeach()
+    message(STATUS "*** dump end ***")
 endif()
