@@ -34,7 +34,7 @@ add_custom_target( ${PROJECT_NAME} ALL
     )
 
 add_test(
-    NAME ${PROJECT_NAME}
+    NAME ${PROJECT_NAME}.ctest
     COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
@@ -50,6 +50,11 @@ add_test(
         ${DIRECTIVES}
         "csim"
     )
+
+set_tests_properties(
+    ${PROJECT_NAME}.ctest PROPERTIES
+    FAIL_REGULAR_EXPRESSION "Error"
+)
 
 
 install(DIRECTORY ${OUT_DIR}
