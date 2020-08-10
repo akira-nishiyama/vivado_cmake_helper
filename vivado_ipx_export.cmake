@@ -1,11 +1,14 @@
 function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH )
 
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/ip_repo")
-    
+
     find_file(  HELPER_SCRIPT_PRJ_GEN
                 NAME vivado_project_generation.tcl
                 HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
                 REQUIRED)
+    string(REPLACE ";" ":" SRC_FILES_ "${SRC_FILES}")
+    string(REPLACE ";" ":" TESTBENCH_FILES_ "${TESTBENCH_FILES}")
+    string(REPLACE ";" ":" IP_REPO_PATH_ "${IP_REPO_PATH}")
 
     #output filename
     set(IP_FILENAME "")
@@ -15,17 +18,17 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
     list(APPEND IP_FILENAME ${PROJECT_VERSION})
     string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
     set(IP_FILENAME "${IP_FILENAME}.zip")
-    
+
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1_gen.timestamp
         COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_PRJ_GEN} -tclargs
             ${PROJECT_NAME}
             ${TARGET_DEVICE}
-            "{${SRC_FILES}}"
-            "{${TESTBENCH_FILES}}"
+            "{${SRC_FILES_}}"
+            "{${TESTBENCH_FILES_}}"
             ${VENDOR}
             ${PROJECT_VERSION}
-            "{${IP_REPO_PATH}}"
+            "{${IP_REPO_PATH_}}"
             ${OUT_DIR}
         COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1_gen.timestamp
         )
@@ -54,7 +57,7 @@ function(project_add_bd BLOCK_NAME BLOCK_DESIGN_TCL DEPENDENCIES)
 
 endfunction()
 
-function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH RTL_PACKAGE_FLAG )
+function(export_ip VENDOR LIBRARY_NAME RTL_PACKAGE_FLAG )
 
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/ip_repo")
 
@@ -76,12 +79,8 @@ function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES I
         OUTPUT ${OUT_DIR}/${IP_FILENAME}
         COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_EXPORT_IP} -tclargs
             ${PROJECT_NAME}
-            ${TARGET_DEVICE}
-            "{${SRC_FILES}}"
-            "{${TESTBENCH_FILES}}"
             ${VENDOR}
             ${PROJECT_VERSION}
-            "{${IP_REPO_PATH}}"
             ${OUT_DIR}
             ${RTL_PACKAGE_FLAG}
         )
