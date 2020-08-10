@@ -38,7 +38,7 @@ project_top
 
 ### Create CmakeLists.txt
 see example/CMakeLists.txt.hls_example
-Find vivado_hls_cmake_helper package for build and simulation.
+Find vivado_hls_cmake_helper package via find_package() for build and simulation.
 If you use ctest, call enable_testing().  
 Project name is assumed top_function and the name is used for build_target.
 Add header path to CFLAS and CFLAGS_TESTBENCH as a LIST.  
@@ -62,7 +62,7 @@ make install
 ```
 
 ### Test
-just run ctest.
+just run ctest in build directory.
 ```bash
 ctest
 ```
@@ -88,14 +88,14 @@ Find vivado_cmake_helper package for build and simulation.
 Create blockdesign.tcl through vivado command(write_bd_tcl).  
 Be sure the design name(export target) is same as project_name  
 (or modify blockdesign.tcl)  
-Find vivado_cmake_helper package for build and simulation.
+Find vivado_cmake_helper package via find_package() for build and simulation.
 If you use ctest, call enable_testing().  
 Add rtl modules and testbenchs if necessary.  
 To export ip do the following function.(defined in vivado_ipx_export.cmake)
 + project_generation(PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH)
   this function add_custom_target prj_gen_\${PROJECT_NAME}.
-  this target is used for vivado project generation(this script use vivado project to )
-  + arg0:export ip name.
+  this target is used for vivado project generation(this helper script use vivado project to generate compile order, include libraries, export ip)
+  + arg0:export ip name.(assume project name)
   + arg1:vendor name.
   + arg2:library name.(user might less problem)
   + arg3:target deivce.
@@ -130,7 +130,12 @@ To setup simulation, use add_sim function.
   + arg3:additional verilog compilation options. Set user include directory here.
   + arg4:additional elaboration options.
   + arg5:additional xsim options. UVM_TESTNAME will be set here if needed.
-  + arg6:used for define compilation order.(because vivado could compile only one process. Unset is also ok if you build project with single process)
+  + arg6:used for define compilation order.(because vivado could compile only one process. Unset is also ok if you build project with single process,see below)
+
+  ```bash
+  make -j4 && make compile_all -j1 && make_elaborate_all -j4 && ctest
+  ```  
+
 
 ### Install
 Installation is done with the following commands.
@@ -145,12 +150,17 @@ make install
 ```
 
 ### Test
-run elaborate_all before run ctest.
+run elaborate_all before run ctest in build directory.
 ```bash
 make elaborate_all
 ctest
 ```
 
+### OpenWDB
+run open_wdb_\${SIM_TARGET} target in build directory.
+```bash
+make open_wdb_\${SIM_TARGET}
+```
 ## nested project
 nested project also works.
 See [ICS_IF](https://github.com/akira-nishiyama/ICS_IF).
