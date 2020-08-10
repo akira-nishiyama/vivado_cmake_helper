@@ -43,13 +43,13 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES ADDITIONAL_VLOG_OPTS AD
                 ${SED} -e 's/xsim ${SIM_TARGET}/xsim ${SIM_TARGET} ${ADDITIONAL_XSIM_OPTS_}/'                    >
                 ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp
         COMMAND ${SED} -i -e '10alog_wave -r /' ${DESTINATION_DIR}/cmd.tcl
-        COMMAND ${SED} -e '0,/elaborate/ s/elaborate/\#elaborate/'   ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp | 
+        COMMAND ${SED} -e '0,/elaborate/ s/elaborate/\#elaborate/'   ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp |
                 ${SED} -e '0,/simulate/  s/simulate/\#simulate/'   >
                 ${DESTINATION_DIR}/compile_${SIM_TARGET}.sh
-        COMMAND ${SED} -e '0,/compile/  s/compile/\#compile/'       ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp  | 
+        COMMAND ${SED} -e '0,/compile/  s/compile/\#compile/'       ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp  |
                 ${SED} -e '0,/simulate/  s/simulate/\#simulate/'   >
                 ${DESTINATION_DIR}/elaborate_${SIM_TARGET}.sh
-        COMMAND ${SED} -e '0,/compile/   s/compile/\#compile/'       ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp | 
+        COMMAND ${SED} -e '0,/compile/   s/compile/\#compile/'       ${DESTINATION_DIR}/${SIM_TARGET}.sh.tmp |
                 ${SED} -e '0,/elaborate/ s/elaborate/\#elaborate/' >
                 ${DESTINATION_DIR}/simulate_${SIM_TARGET}.sh
         COMMAND chmod +x ${DESTINATION_DIR}/compile_${SIM_TARGET}.sh
@@ -102,14 +102,13 @@ function( add_sim SIM_TARGET SIMULATION_DIR DEPENDENCIES ADDITIONAL_VLOG_OPTS AD
         DEPENDS ${WORK_DIR}/${SIM_TARGET}.wdb
     )
     add_test(
-        NAME simulate_${SIM_TARGET}.sh
+        NAME simulate_${SIM_TARGET}.ctest
         COMMAND "simulate_${SIM_TARGET}.sh" "-noclean_files"
         WORKING_DIRECTORY ${WORK_DIR}
     )
     set_tests_properties(
-        simulate_${SIM_TARGET}.sh PROPERTIES 
+        simulate_${SIM_TARGET}.ctest PROPERTIES 
         DEPENDS ${PROJECT_NAME} ${WORK_DIR}/compile_${SIM_TARGET}.sh ${WORK_DIR}/elaborate_${SIM_TARGET}.timestamp
         FAIL_REGULAR_EXPRESSION "UVM_FATAL : *[1-9];UVM_ERROR : *[1-9]"
     )
 endfunction()
-
