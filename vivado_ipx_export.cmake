@@ -54,10 +54,9 @@ function(project_add_bd BLOCK_NAME BLOCK_DESIGN_TCL DEPENDENCIES)
 
 endfunction()
 
-function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH )
+function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES IP_REPO_PATH RTL_PACKAGE_FLAG )
 
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/ip_repo")
-
 
     find_file(  HELPER_SCRIPT_EXPORT_IP
                 NAME vivado_export_ip.tcl
@@ -84,7 +83,7 @@ function(export_ip VENDOR LIBRARY_NAME TARGET_DEVICE SRC_FILES TESTBENCH_FILES I
             ${PROJECT_VERSION}
             "{${IP_REPO_PATH}}"
             ${OUT_DIR}
-            ${BLOCK_DESIGN_TCL}
+            ${RTL_PACKAGE_FLAG}
         )
 
     add_custom_target( ${PROJECT_NAME} ALL
