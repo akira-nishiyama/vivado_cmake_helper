@@ -63,7 +63,7 @@ find_file(  VIVADO_ADD_SIM_CMAKE
 
 
 function(require PACKAGE_NAME GPATH GTAG)
-    if(CMAKE_VERSION VERSION_LESS 3.11)
+    if(CMAKE_VERSION VERSION_GREATER 3.10)
         include(FetchContent)
         find_package(${PACKAGE_NAME} QUIET)
         if (NOT ${PACKAGE_NAME}_FOUND)
