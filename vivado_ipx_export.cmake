@@ -15,7 +15,8 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
     list(APPEND IP_FILENAME ${VENDOR})
     list(APPEND IP_FILENAME ${LIBRARY_NAME})
     list(APPEND IP_FILENAME ${PROJECT_NAME})
-    list(APPEND IP_FILENAME ${PROJECT_VERSION})
+    #list(APPEND IP_FILENAME ${PROJECT_VERSION})
+    list(APPEND IP_FILENAME "1.0")
     string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
     set(IP_FILENAME "${IP_FILENAME}.zip")
 
@@ -27,7 +28,8 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
             "{${SRC_FILES_}}"
             "{${TESTBENCH_FILES_}}"
             ${VENDOR}
-            ${PROJECT_VERSION}
+            #${PROJECT_VERSION}
+            "1.0"
             "{${IP_REPO_PATH_}}"
             ${OUT_DIR}
         COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1_gen.timestamp
@@ -71,7 +73,8 @@ function(export_ip VENDOR LIBRARY_NAME RTL_PACKAGE_FLAG )
     list(APPEND IP_FILENAME ${VENDOR})
     list(APPEND IP_FILENAME ${LIBRARY_NAME})
     list(APPEND IP_FILENAME ${PROJECT_NAME})
-    list(APPEND IP_FILENAME ${PROJECT_VERSION})
+    #list(APPEND IP_FILENAME ${PROJECT_VERSION})
+    list(APPEND IP_FILENAME "1.0")
     string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
     set(IP_FILENAME "${IP_FILENAME}.zip")
 
@@ -80,7 +83,8 @@ function(export_ip VENDOR LIBRARY_NAME RTL_PACKAGE_FLAG )
         COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_EXPORT_IP} -tclargs
             ${PROJECT_NAME}
             ${VENDOR}
-            ${PROJECT_VERSION}
+            #${PROJECT_VERSION}
+            "1.0"
             ${OUT_DIR}
             ${RTL_PACKAGE_FLAG}
         )
