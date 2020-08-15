@@ -62,26 +62,46 @@ find_file(  VIVADO_ADD_SIM_CMAKE
 #message("vivado simulation related functions found:${VIVADO_ADD_SIM_CMAKE}")
 
 
-function(require PACKAGE_NAME GPATH GTAG)
-    if(CMAKE_VERSION VERSION_GREATER 3.10)
+
+#require function definition.
+if(CMAKE_VERSION VERSION_GREATER 3.10)
+
+macro(require PACKAGE_NAME)
+    include(CMakeParseArguments)
+    cmake_parse_arguments(REQUIRE "" "GIT_REPOSITORY;GIT_TAG" "" ${ARGN})
+    message("require_package - ${PACKAGE_NAME}")
+    message("GIT_REPOSITORY[OPTION] - ${REQUIRE_GIT_REPOSITORY}")
+    message("GIT_TAG[OPTION] - ${REQUIRE_GIT_TAG}")
         include(FetchContent)
         find_package(${PACKAGE_NAME} QUIET)
         if (NOT ${PACKAGE_NAME}_FOUND)
             FetchContent_Declare(${PACKAGE_NAME}_fetch
-                GIT_REPOSITORY ${GPATH}
-                GIT_TAG ${GTAG}
+                GIT_REPOSITORY ${REQUIRE_GIT_REPOSITORY}
+                GIT_TAG ${REQUIRE_GIT_TAG}
             )
             FetchContent_Populate(${PACKAGE_NAME}_fetch)
             set(${PACKAGE_NAME}_DIR ${${PACKAGE_NAME}_fetch_SOURCE_DIR})
-            message("${PACKAGE_NAME}_fetch_SOURCE_DIR : ${${PACKAGE_NAME}_fetch_SOURCE_DIR}")
+            message("set ${PACKAGE_NAME}_DIR : ${${PACKAGE_NAME}_fetch_SOURCE_DIR}")
             find_package(${PACKAGE_NAME} REQUIRED)
         endif()
-    else()
-        message("WARNING:require function is not supported CMAKE < 3.11. replace to find_package")
-        find_package(${PACKAGE_NAME} REQUIRED)
-    endif()
-endfunction()
+endmacro()
 
+else()
+
+message("WARNING:require function is not supported CMAKE < 3.11. replace to find_package")
+message("WARNING:If error observed, please add -D\${PACKAGE_NAME}_DIR=<path-to-package> to cmake command")
+
+macro(require PACKAGE_NAME)
+    include(CMakeParseArguments)
+    cmake_parse_arguments(REQUIRE "" "GIT_REPOSITORY;GIT_TAG" "" ${ARGN})
+    message("require_package - ${PACKAGE_NAME}")
+    message("GIT_REPOSITORY(invalid before cmake 3.10) - ${REQUIRE_GIT_REPOSITORY}")
+    message("GIT_TAG(invalid before cmake 3.10) - ${REQUIRE_GIT_TAG}")
+    find_package(${PACKAGE_NAME} REQUIRED)
+endmacro()
+
+endif()
+#end require function.
 
 include(${VIVADO_IPX_EXPORT_CMAKE})
 include(${VIVADO_ADD_SIM_CMAKE})
