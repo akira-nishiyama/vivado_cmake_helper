@@ -61,6 +61,28 @@ find_file(  VIVADO_ADD_SIM_CMAKE
             REQUIRED)
 #message("vivado simulation related functions found:${VIVADO_ADD_SIM_CMAKE}")
 
+
+function(require PACKAGE_NAME GPATH GTAG)
+    if(CMAKE_VERSION VERSION_LESS 3.11)
+        include(FetchContent)
+        find_package(${PACKAGE_NAME} QUIET)
+        if (NOT ${PACKAGE_NAME}_FOUND)
+            FetchContent_Declare(${PACKAGE_NAME}_fetch
+                GIT_REPOSITORY ${GPATH}
+                GIT_TAG ${GTAG}
+            )
+            FetchContent_Populate(${PACKAGE_NAME}_fetch)
+            set(${PACKAGE_NAME}_DIR ${${PACKAGE_NAME}_fetch_SOURCE_DIR})
+            message("${PACKAGE_NAME}_fetch_SOURCE_DIR : ${${PACKAGE_NAME}_fetch_SOURCE_DIR}")
+            find_package(${PACKAGE_NAME} REQUIRED)
+        endif()
+    else()
+        message("WARNING:require function is not supported CMAKE < 3.11. replace to find_package")
+        find_package(${PACKAGE_NAME} REQUIRED)
+    endif()
+endfunction()
+
+
 include(${VIVADO_IPX_EXPORT_CMAKE})
 include(${VIVADO_ADD_SIM_CMAKE})
 
