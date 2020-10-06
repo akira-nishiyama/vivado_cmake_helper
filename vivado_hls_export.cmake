@@ -39,8 +39,32 @@ add_custom_target( ${PROJECT_NAME} ALL
     DEPENDS ${OUT_DIR}/${IP_FILENAME}
     )
 
+add_custom_command(
+    OUTPUT simulate_${PROJECT_NAME}.timestamp
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        ${CLOCK_PERIOD}
+        "{${SRC_FILES_V}}"
+        "{cflags=${CFLAGS_V}}"
+        "{${TESTBENCH_FILES_V}}"
+        "{cflags_tb=${CFLAGS_TB_V}}"
+        "{${DESCRIPTION_V}}"
+        ${DISPLAY_IP_NAME}
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        ${DIRECTIVES}
+        "csim"
+    COMMAND ${CMAKE_COMMAND} -E touch simulate_${PROJECT_NAME}.timestamp
+    DEPENDS ${SRC_FILES} ${TESTBENCH_FILES}
+    )
+
+add_custom_target( simulate_${PROJECT_NAME}
+    DEPENDS simulate_${PROJECT_NAME}.timestamp
+    )
+
 add_test(
-    NAME ${PROJECT_NAME}.ctest
+    NAME simulate_${PROJECT_NAME}.ctest
     COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
@@ -58,7 +82,7 @@ add_test(
     )
 
 set_tests_properties(
-    ${PROJECT_NAME}.ctest PROPERTIES
+    simulate_${PROJECT_NAME}.ctest PROPERTIES
     FAIL_REGULAR_EXPRESSION "Error"
 )
 
