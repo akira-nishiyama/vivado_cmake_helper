@@ -7,6 +7,11 @@ list(APPEND IP_FILENAME ${VENDOR})
 list(APPEND IP_FILENAME ${LIBRARY_NAME})
 list(APPEND IP_FILENAME ${PROJECT_NAME})
 list(APPEND IP_FILENAME ${PROJECT_VERSION})
+string(REPLACE ";" ":" CFLAGS_V "${CFLAGS}")
+string(REPLACE ";" ":" CFLAGS_TB_V "${CFLAGS_TB}")
+string(REPLACE " " ":" DESCRIPTION_V "${DESCRIPTION}")
+string(REPLACE ";" ":" SRC_FILES_V "${SRC_FILES}")
+string(REPLACE ";" ":" TESTBENCH_FILES_V "${TESTBENCH_FILES}")
 string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
 string( REPLACE "." "_" IP_FILENAME "${IP_FILENAME}" )
 set(IP_FILENAME "${IP_FILENAME}.zip")
@@ -17,16 +22,17 @@ add_custom_command(
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
         ${CLOCK_PERIOD}
-        "{${SRC_FILES}}"
-        "{cflags=${CFLAGS}}"
-        "{${TESTBENCH_FILES}}"
-        "{cflags_tb=${CFLAGS_TB}}"
-        "{${DESCRIPTION}}"
+        "{${SRC_FILES_V}}"
+        "{cflags=${CFLAGS_V}}"
+        "{${TESTBENCH_FILES_V}}"
+        "{cflags_tb=${CFLAGS_TB_V}}"
+        "{${DESCRIPTION_V}}"
         ${DISPLAY_IP_NAME}
         ${VENDOR}
         ${PROJECT_VERSION}
         ${DIRECTIVES}
         "export"
+    DEPENDS ${SRC_FILES}
     )
 
 add_custom_target( ${PROJECT_NAME} ALL
@@ -39,11 +45,11 @@ add_test(
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
         ${CLOCK_PERIOD}
-        "{${SRC_FILES}}"
-        "{cflags=${CFLAGS}}"
-        "{${TESTBENCH_FILES}}"
-        "{cflags_tb=${CFLAGS_TB}}"
-        "{${DESCRIPTION}}"
+        "{${SRC_FILES_V}}"
+        "{cflags=${CFLAGS_V}}"
+        "{${TESTBENCH_FILES_V}}"
+        "{cflags_tb=${CFLAGS_TB_V}}"
+        "{${DESCRIPTION_V}}"
         ${DISPLAY_IP_NAME}
         ${VENDOR}
         ${PROJECT_VERSION}
