@@ -9,6 +9,11 @@ Ubuntu 18.04
 Vivado 2019.2
 Vivado_HLS 2019.2
 CMake 3.10.2
+Python 3.6.9(Used with document generation)
+wavedrompy 2.0.3(Used with document generation)
+plantuml.jar(Used with document generation)
+pandoc 1.19.6.2.4(Used with document generation)
+Inkscape (Used with document generation)
 
 # Example
 See [ICS_IF](https://github.com/akira-nishiyama/ICS_IF).
@@ -21,6 +26,17 @@ Just run below script.(or you can run cmake with -Dvivado_cmake_helper_DIR/-Dviv
 source <path-to-repository>/setup.sh
 ```
 
+Python3, wavedrompy, plantuml.jar, pandoc and Inkscape are required.
+```bash
+apt install python3
+pip3 install wavedrompy
+apt install pandoc
+apt install inkscape
+```
+
+Download plantuml.jar from http://plantuml.com/
+plantuml.jar should be in path or Top directory of CMake project.
+
 # Usage
 ## vivado_hls
 ### Directory structure
@@ -31,6 +47,7 @@ project_top
 ├── directives.tcl
 ├── include:place headers
 ├── src:place sources
+├── docs:place documents
 └── test:place test codes
     ├── include:place test headers
     └── src:place test sources
@@ -73,6 +90,7 @@ Example assumes below directory structure.
 ```
 project_top
 ├── CMakeLists.txt
+├── docs:place documents
 ├── scripts
 │   └── blockdesign.tcl
 ├── src
@@ -134,8 +152,7 @@ To setup simulation, use add_sim function.
 
   ```bash
   make -j4 && make compile_all -j1 && make_elaborate_all -j4 && ctest
-  ```  
-
+  ```
 
 ### Install
 Installation is done with the following commands.
@@ -160,7 +177,26 @@ ctest
 run open_wdb_\${SIM_TARGET} target in build directory.
 ```bash
 make open_wdb_\${SIM_TARGET}
+
 ```
+
+## Document Generation
+To Generate document, define DOC_GEN variable and use add_pandoc function.
++ add_pandoc(TARGET SOURCE)
+  add_pandoc function adds target named pandoc_\${TARGET} and generate \${TARGET}.html into docs directory of build directory.
+  + arg0: target name.
+  + arg1: document source(markdown)
+
+  ```bash
+    make pandoc_${TARGET}
+  ```
+
+  This function also setup docs target.
+  or docs target generates all pandoc_\${TARGET}.
+  ```bash
+    make docs
+  ```
+
 ## nested project
 nested project also works.
 See [ICS_IF](https://github.com/akira-nishiyama/ICS_IF).
@@ -168,4 +204,5 @@ Add a cmake buildable project with add_subdirectory(modules).
 Or use find_package() with xxx-config.cmake, findxxx.cmake.
 
 # License
-This software is released under the MIT License, see LICENSE.
+This software is released under the MIT License where except otherwise indicated, see LICENSE.
+

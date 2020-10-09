@@ -61,6 +61,10 @@ find_file(  VIVADO_ADD_SIM_CMAKE
             REQUIRED)
 #message("vivado simulation related functions found:${VIVADO_ADD_SIM_CMAKE}")
 
+find_file(  VIVADO_ADD_SIM_CMAKE
+            NAME vivado_add_sim.cmake
+            HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+            REQUIRED)
 
 
 #require function definition.
@@ -107,6 +111,8 @@ endif()
 include(${VIVADO_IPX_EXPORT_CMAKE})
 include(${VIVADO_ADD_SIM_CMAKE})
 
+include(${CMAKE_CURRENT_LIST_DIR}/pandoc.cmake)
+    
 
 
 
