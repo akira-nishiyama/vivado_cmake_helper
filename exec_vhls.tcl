@@ -24,8 +24,8 @@
 #        cosim  - run csynth_design and cosim_design
 #
 # Usage:
-#    vivado_hls exec_vhls.tcl ics_if_rx xczu3eg-sbva484-1-e 10 {src/ics_if_rx.cpp:src/empty.cpp} {cflags="-Iinclude"} {test/src/tb_ics_if_rx.cpp} {cflags_tb="-Iinclude"} {description:of:ip} ICS_IF_RX Akira_Nishiyama 0.1 directives.tcl export
- 
+#    vivado_hls exec_vhls.tcl ics_if_rx xczu3eg-sbva484-1-e 10 {src/ics_if_rx.cpp:src/empty.cpp} {cflags="-Iinclude"} {test/src/tb_ics_if_rx.cpp} {cflags_tb="-Iinclude"} {description:of:ip} ICS_IF_RX Akira_Nishiyama 0.1 directives.tcl export {ldflags={-L/home/akira/local/lib:-lgtest_main:-lgtest}
+
 # puts $argv0
 set top_function_name   [lindex $argv  0]
 set target_part_name    [lindex $argv  1]
@@ -50,6 +50,9 @@ set vendor_name         [lindex $argv  9]
 set version             [lindex $argv 10]
 set directives_tcl_path [lindex $argv 11]
 set flow_control        [lindex $argv 12]
+#ldflags
+scan [lindex $argv 13] "ldflags=%s" ldflags_in
+regsub -all ":" $ldflags_in " " ldflags
 
 puts [lindex $argv  0]
 puts [lindex $argv  1]
@@ -70,6 +73,7 @@ puts $file_list
 
 puts $cflags
 puts $cflags_tb
+puts $ldflags
 
 open_project $top_function_name
 set_top $top_function_name
@@ -92,10 +96,10 @@ if {$flow_control == "export" } {
   csynth_design
   export_design -format ip_catalog
 } elseif {$flow_control == "csim" } {
-  csim_design
+  csim_design -ldflags $ldflags
 } elseif {$flow_control == "cosim" } {
   csynth_design
-  cosim_design
+  cosim_design -ldflags $ldflags
 } else {
   throw {UNDEFINED_FLOW} "undefined flow detected."
 }

@@ -12,6 +12,7 @@ string(REPLACE ";" ":" CFLAGS_TB_V "${CFLAGS_TB}")
 string(REPLACE " " ":" DESCRIPTION_V "${DESCRIPTION}")
 string(REPLACE ";" ":" SRC_FILES_V "${SRC_FILES}")
 string(REPLACE ";" ":" TESTBENCH_FILES_V "${TESTBENCH_FILES}")
+string(REPLACE ";" ":" LDFLAGS_V "${LDFLAGS}")
 string( REPLACE ";" "_" IP_FILENAME "${IP_FILENAME}" )
 string( REPLACE "." "_" IP_FILENAME "${IP_FILENAME}" )
 set(IP_FILENAME "${IP_FILENAME}.zip")
@@ -55,6 +56,7 @@ add_custom_command(
         ${PROJECT_VERSION}
         ${DIRECTIVES}
         "csim"
+        "ldflags={${LDFLAGS_V}}"
     COMMAND ${CMAKE_COMMAND} -E touch simulate_${PROJECT_NAME}.timestamp
     DEPENDS ${SRC_FILES} ${TESTBENCH_FILES}
     )
@@ -79,11 +81,12 @@ add_test(
         ${PROJECT_VERSION}
         ${DIRECTIVES}
         "csim"
+        "ldflags={${LDFLAGS_V}}"
     )
 
 set_tests_properties(
     simulate_${PROJECT_NAME}.ctest PROPERTIES
-    FAIL_REGULAR_EXPRESSION "Error"
+    FAIL_REGULAR_EXPRESSION "Failed"
 )
 
 
