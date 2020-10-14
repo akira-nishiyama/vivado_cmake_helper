@@ -33,6 +33,7 @@ add_custom_command(
         ${PROJECT_VERSION}
         ${DIRECTIVES}
         "export"
+        "ldflags={${LDFLAGS_V}}"
     DEPENDS ${SRC_FILES}
     )
 
@@ -41,7 +42,7 @@ add_custom_target( ${PROJECT_NAME} ALL
     )
 
 add_custom_command(
-    OUTPUT simulate_${PROJECT_NAME}.timestamp
+    OUTPUT csim_${PROJECT_NAME}.timestamp
     COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
@@ -57,16 +58,40 @@ add_custom_command(
         ${DIRECTIVES}
         "csim"
         "ldflags={${LDFLAGS_V}}"
-    COMMAND ${CMAKE_COMMAND} -E touch simulate_${PROJECT_NAME}.timestamp
+    COMMAND ${CMAKE_COMMAND} -E touch csim_${PROJECT_NAME}.timestamp
     DEPENDS ${SRC_FILES} ${TESTBENCH_FILES}
     )
 
-add_custom_target( simulate_${PROJECT_NAME}
-    DEPENDS simulate_${PROJECT_NAME}.timestamp
+add_custom_target( csim_${PROJECT_NAME}
+    DEPENDS csim_${PROJECT_NAME}.timestamp
     )
 
+add_custom_command(
+    OUTPUT cosim_${PROJECT_NAME}.timestamp
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        ${CLOCK_PERIOD}
+        "{${SRC_FILES_V}}"
+        "{cflags=${CFLAGS_V}}"
+        "{${TESTBENCH_FILES_V}}"
+        "{cflags_tb=${CFLAGS_TB_V}}"
+        "{${DESCRIPTION_V}}"
+        ${DISPLAY_IP_NAME}
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        ${DIRECTIVES}
+        "cosim"
+        "ldflags={${LDFLAGS_V}}"
+    COMMAND ${CMAKE_COMMAND} -E touch cosim_${PROJECT_NAME}.timestamp
+    DEPENDS ${SRC_FILES} ${TESTBENCH_FILES}
+    )
+
+add_custom_target( cosim_${PROJECT_NAME}
+    DEPENDS cosim_${PROJECT_NAME}.timestamp
+    )
 add_test(
-    NAME simulate_${PROJECT_NAME}.ctest
+    NAME csim_${PROJECT_NAME}.ctest
     COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
         ${PROJECT_NAME}
         ${TARGET_DEVICE}
@@ -81,11 +106,29 @@ add_test(
         ${PROJECT_VERSION}
         ${DIRECTIVES}
         "csim"
+        "ldflags={${LDFLAGS_V}}"
+    )
+add_test(
+    NAME cosim_${PROJECT_NAME}.ctest
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        ${CLOCK_PERIOD}
+        "{${SRC_FILES_V}}"
+        "{cflags=${CFLAGS_V}}"
+        "{${TESTBENCH_FILES_V}}"
+        "{cflags_tb=${CFLAGS_TB_V}}"
+        "{${DESCRIPTION_V}}"
+        ${DISPLAY_IP_NAME}
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        ${DIRECTIVES}
+        "cosim"
         "ldflags={${LDFLAGS_V}}"
     )
 
 set_tests_properties(
-    simulate_${PROJECT_NAME}.ctest PROPERTIES
+    csim_${PROJECT_NAME}.ctest PROPERTIES
     FAIL_REGULAR_EXPRESSION "Failed"
 )
 

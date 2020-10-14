@@ -63,8 +63,9 @@ Add sources to SRC_FILES and TESTBENCH_FILES as a LIST.
 The LIST have to replace delimiter ";" to ":".(or tcl not works)
 After that include vivado_hls_export.cmake.  
 That add custom_command and custom_target for build.(build target name is same as project name)  
-That add add_test for csimulation. Cosim is not supported.(test target is same as project name)
-That also setup installation. Copy ip folder to CMAKE_INSTALL_PREFIX/${project_name} except archived zip.
+That also add custom_command and custom_target for simulation. The simulation target is provided as csim_\$\{project_name\} and cosim_\$\{project_name\}.
+That add add_test for c simulation(csim) and c/rtl simulation(cosim).(test target is csim_\$\{project_name\}.ctest and cosim_\$\{project_name\}.ctest)
+That also setup installation. Copy ip folder to CMAKE_INSTALL_PREFIX/\$\{project_name\} except archived zip.
 
 ### Install
 Installation is done with the following commands.
@@ -205,4 +206,3 @@ Or use find_package() with xxx-config.cmake, findxxx.cmake.
 
 # License
 This software is released under the MIT License where except otherwise indicated, see LICENSE.
-
