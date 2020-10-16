@@ -75,7 +75,7 @@ puts $cflags
 puts $cflags_tb
 puts $ldflags
 
-open_project $top_function_name
+open_project -reset $top_function_name
 set_top $top_function_name
 open_solution "solution1"
 set_part $target_part_name
@@ -100,6 +100,9 @@ if {$flow_control == "export" } {
 } elseif {$flow_control == "cosim" } {
   csynth_design
   cosim_design -ldflags $ldflags
+} elseif {$flow_control == "cosim_wavedebug" } {
+  csynth_design
+  cosim_design -ldflags $ldflags -tool xsim -wave_debug -trace_level all
 } else {
   throw {UNDEFINED_FLOW} "undefined flow detected."
 }

@@ -40,6 +40,10 @@ add_custom_command(
 add_custom_target( ${PROJECT_NAME} ALL
     DEPENDS ${OUT_DIR}/${IP_FILENAME}
     )
+add_custom_target( open_prj_${PROJECT_NAME}
+    COMMAND ${HLS_COMMAND} -p ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+    DEPENDS ${OUT_DIR}/${IP_FILENAME}
+    )
 
 add_custom_command(
     OUTPUT csim_${PROJECT_NAME}.timestamp
@@ -90,6 +94,32 @@ add_custom_command(
 add_custom_target( cosim_${PROJECT_NAME}
     DEPENDS cosim_${PROJECT_NAME}.timestamp
     )
+
+add_custom_command(
+    OUTPUT cosim_wavedebug_${PROJECT_NAME}.timestamp
+    COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
+        ${PROJECT_NAME}
+        ${TARGET_DEVICE}
+        ${CLOCK_PERIOD}
+        "{${SRC_FILES_V}}"
+        "{cflags=${CFLAGS_V}}"
+        "{${TESTBENCH_FILES_V}}"
+        "{cflags_tb=${CFLAGS_TB_V}}"
+        "{${DESCRIPTION_V}}"
+        ${DISPLAY_IP_NAME}
+        ${VENDOR}
+        ${PROJECT_VERSION}
+        ${DIRECTIVES}
+        "cosim_wavedebug"
+        "ldflags={${LDFLAGS_V}}"
+    COMMAND ${CMAKE_COMMAND} -E touch cosim_${PROJECT_NAME}.timestamp
+    DEPENDS ${SRC_FILES} ${TESTBENCH_FILES}
+    )
+
+add_custom_target( cosim_wavedebug_${PROJECT_NAME}
+    DEPENDS cosim_wavedebug_${PROJECT_NAME}.timestamp
+    )
+
 add_test(
     NAME csim_${PROJECT_NAME}.ctest
     COMMAND ${HLS_COMMAND} ${HELPER_SCRIPT_EXEC_VIVADO_HLS}
