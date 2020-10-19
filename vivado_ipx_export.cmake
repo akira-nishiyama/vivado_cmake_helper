@@ -37,6 +37,9 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
     add_custom_target( prj_gen_${PROJECT_NAME} ALL
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1_gen.timestamp
         )
+    add_custom_target( open_prj_${PROJECT_NAME}
+        COMMAND ${VIVADO_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1.xpr
+        )
 
 endfunction()
 
