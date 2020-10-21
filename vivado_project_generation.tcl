@@ -52,10 +52,10 @@ puts $file_list
 puts $file_list_tb
 
 create_project $vivado_project_name ./$vivado_project_name -part $target_part_name -force
-if { $file_list != "\ " } {
+if { $file_list != "\ " && $file_list != "" } {
     add_files -norecurse $file_list
 }
-if { $file_list_tb != "\ " } {
+if { $file_list_tb != "\ " && $file_list_tb != "" } {
     add_files -fileset $simulation_set_name -norecurse $file_list_tb
 }
 update_compile_order -fileset sources_1
