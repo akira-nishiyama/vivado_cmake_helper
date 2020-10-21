@@ -43,6 +43,27 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
 
 endfunction()
 
+function(project_add_constr PRJ_NAME CONSTR_FILES DEPENDENCIES)
+
+    find_file(  HELPER_SCRIPT_ADD_CONSTR
+                NAME vivado_add_constr.tcl
+                HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+                REQUIRED)
+
+    string(REPLACE ";" ":" CONSTR_FILES_ "${CONSTR_FILES}")
+
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/project_1/add_constr_${PRJ_NAME}.timestamp
+        COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_ADD_CONSTR} -tclargs "{${CONSTR_FILES_}}"
+        COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/project_1/add_constr_${PRJ_NAME}.timestamp
+        DEPENDS ${DEPENDENCIES}
+    )
+    add_custom_target( add_constr_${PRJ_NAME}
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/project_1/add_constr_${PRJ_NAME}.timestamp
+    )
+
+endfunction()
+
 function(project_add_bd BLOCK_NAME BLOCK_DESIGN_TCL DEPENDENCIES)
 
     find_file(  HELPER_SCRIPT_ADD_BD
