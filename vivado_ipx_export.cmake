@@ -39,6 +39,7 @@ function(project_generation PROJECT_NAME VENDOR LIBRARY_NAME TARGET_DEVICE SRC_F
         )
     add_custom_target( open_prj_${PROJECT_NAME}
         COMMAND ${VIVADO_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/project_1/project_1.xpr
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/project_1
         )
 
 endfunction()
@@ -122,3 +123,29 @@ function(export_ip VENDOR LIBRARY_NAME RTL_PACKAGE_FLAG )
         PATTERN "*.zip" EXCLUDE
         PATTERN "*")
 endfunction()
+
+function(generate_bitstream PRJ_NAME JOBS DEPENDENCIES)
+
+    find_file(  HELPER_SCRIPT_GEN_BIT
+                NAME vivado_generate_bitstream.tcl
+                HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+                REQUIRED)
+
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/project_1/gen_bit_${PRJ_NAME}.timestamp
+        COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_GEN_BIT} -tclargs ${PRJ_NAME} ${JOBS}
+        COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/project_1/gen_bit_${PRJ_NAME}.timestamp
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/project_1
+        DEPENDS ${DEPENDENCIES}
+    )
+
+    add_custom_target( ${PROJECT_NAME} ALL
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/project_1/gen_bit_${PRJ_NAME}.timestamp
+    )
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/project_1/${PRJ_NAME}.xsa
+            DESTINATION ${PROJECT_NAME}
+            )
+
+endfunction()
+
