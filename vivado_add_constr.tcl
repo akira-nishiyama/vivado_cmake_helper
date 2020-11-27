@@ -23,5 +23,5 @@ set constraint_set_name "constrs_1"
 
 open_project $vivado_project_name/$vivado_project_name.xpr
 
-add_files -fileset $constraint_set_name -norecurse $file_list_const
+import_files -fileset $constraint_set_name -norecurse $file_list_const
 

@@ -84,6 +84,26 @@ function(project_add_bd BLOCK_NAME BLOCK_DESIGN_TCL DEPENDENCIES)
 
 endfunction()
 
+function(project_source_tcl PRJ_NAME TCL_FILE DEPENDENCIES)
+
+    find_file(  HELPER_SCRIPT_SOURCE_TCL
+                NAME vivado_source_tcl.tcl
+                HINTS $ENV{VIVADO_CMAKE_HELPER} ${CMAKE_CURRENT_LIST_DIR}
+                REQUIRED)
+
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/project_1/source_tcl_${PRJ_NAME}.timestamp
+        COMMAND ${VIVADO_COMMAND} -mode batch -source ${HELPER_SCRIPT_SOURCE_TCL} -tclargs ${TCL_FILE}
+        COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/project_1/source_tcl_${PRJ_NAME}.timestamp
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/project_1
+        DEPENDS ${DEPENDENCIES}
+    )
+    add_custom_target( source_tcl_${PRJ_NAME}
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/project_1/source_tcl_${PRJ_NAME}.timestamp
+    )
+
+endfunction()
+
 function(export_ip VENDOR LIBRARY_NAME RTL_PACKAGE_FLAG )
 
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/ip_repo")
