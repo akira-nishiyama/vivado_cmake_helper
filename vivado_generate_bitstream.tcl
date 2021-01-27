@@ -25,10 +25,10 @@ set impl_set_name "impl_1"
 
 open_project $vivado_project_name.xpr
 reset_run $synth_set_name
-#reset_target all [get_files -filter {FILE_TYPE=="Block Designs"}]
-#reset_target all [get_files -filter {SCOPE==""}]
-#generate_target all [get_files -filter {FILE_TYPE=="Block Designs"}]
-#generate_target all [get_files -filter {SCOPE==""}]
+reset_target all [get_files -filter {FILE_TYPE=="Block Designs"}]
+reset_target all [get_files -filter {SCOPE==""}]
+generate_target all [get_files -filter {FILE_TYPE=="Block Designs"}]
+generate_target all [get_files -filter {SCOPE==""}]
 launch_runs $impl_set_name -to_step write_bitstream -jobs $number_of_jobs
 wait_on_run $impl_set_name
 #write_hw_platform -include_bit -include_emulation $design_name.xsa -force
